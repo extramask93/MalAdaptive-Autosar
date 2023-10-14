@@ -1,0 +1,2 @@
+1. Compile_commands.json won't be generated until there is at least one cpp (object) file
+
