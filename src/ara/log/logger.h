@@ -1,8 +1,8 @@
 #pragma once
 #include <ara/core/intance_specifier.h>
 #include <ara/core/string_view.h>
-#include <ara/log/log_stream.h>
 #include <ara/log/common.h>
+#include <ara/log/log_stream.h>
 #include <cstdint>
 namespace ara {
 namespace log {
@@ -78,8 +78,17 @@ void RegisterConnectionStateHandler(
 template <typename T>
 Argument<T> Arg(T &&arg, const char *name = nullptr, const char *unit = nullptr,
                 Format fmt = Dflt()) noexcept;
+class LoggingFramework;
 class Logger {
+private:
+  std::string m_ctxId;
+  std::string m_ctxDescription;
+  LogLevel m_logLevel;
+  LoggingFramework &m_framework;
 public:
+  Logger(core::StringView ctxId, core::StringView ctxDesc, LogLevel lvl,
+          LoggingFramework &framework): m_ctxId{ctxId},
+      m_ctxDescription{ctxDesc}, m_logLevel{lvl}, m_framework {framework} {}
   LogStream LogFatal() const noexcept;
   LogStream LogError() const noexcept;
   LogStream LogWarn() const noexcept;
@@ -95,10 +104,9 @@ public:
   template <typename... Attrs, typename MsgId, typename... Params>
   void LogWith(const std::tuple<Attrs...> &attrs, const MsgId &id,
                const Params &...params) noexcept;
-  void SetThreshold (LogLevel threshold) noexcept;
+  void SetThreshold(LogLevel threshold) noexcept;
 
 private:
-  LogLevel m_logLevel;
 };
 } // namespace log
 } // namespace ara

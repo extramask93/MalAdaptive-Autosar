@@ -1,3 +1,4 @@
+#pragma once
 #include <ara/core/error_code.h>
 #include <ara/core/optional.h>
 #include <functional>
