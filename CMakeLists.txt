@@ -13,8 +13,7 @@ endif()
 
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h")
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-message("${headers} ${sources}" )
-add_library(${PROJECT_NAME} ${headers} ${sources}
+add_library(${PROJECT_NAME} SHARED ${headers} ${sources}
     )
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 23

@@ -1,0 +1,7 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "cmake.generator": "Unix Makefiles",
+    "cmake.configureSettings": {
+      "CMAKE_CXX_LINK_FLAGS":["-Wl,-rpath,$HOME/toolchains/lib64","-L$HOME/toolchains/lib64"],
+    }
+}

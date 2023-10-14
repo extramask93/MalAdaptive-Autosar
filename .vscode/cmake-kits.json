@@ -1,0 +1,9 @@
+[
+{
+    "name": "Greatest gcc",
+    "compilers": {
+        "CC": "${userHome}/toolchains/bin/gcc",
+        "CXX": "${userHome}/toolchains/bin/g++"
+    }
+}
+]
