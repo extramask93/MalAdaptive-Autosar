@@ -95,9 +95,7 @@ public:
   LogStream LogInfo() const noexcept;
   LogStream LogDebug() const noexcept;
   LogStream LogVerbose() const noexcept;
-  bool IsEnabled(LogLevel logLevel) const noexcept {
-    return logLevel == m_logLevel;
-  }
+  bool IsEnabled(LogLevel logLevel) const noexcept;
   LogStream WithLevel(LogLevel logLevel) const noexcept;
   template <typename MsgId, typename... Params>
   void Log(const MsgId &id, const Params &...args) noexcept;
@@ -105,8 +103,6 @@ public:
   void LogWith(const std::tuple<Attrs...> &attrs, const MsgId &id,
                const Params &...params) noexcept;
   void SetThreshold(LogLevel threshold) noexcept;
-
-private:
 };
 } // namespace log
 } // namespace ara
