@@ -1,17 +1,17 @@
 #include <ara/core/error_code.h>
 #include <ara/core/optional.h>
-#include <type_traits>
 #include <functional>
+#include <type_traits>
 
 namespace ara {
 namespace core {
 /*TODO move this to utils
  * taken from https://open-std.org/JTC1/SC22/WG21/docs/papers/2020/p2098r1.pdf
  * */
-template<typename Test, template<typename...> class Ref>
+template <typename Test, template <typename...> class Ref>
 struct is_specialization : std::false_type {};
-template<template<typename...> class Ref, typename... Args>
-struct is_specialization<Ref<Args...>, Ref>: std::true_type {};
+template <template <typename...> class Ref, typename... Args>
+struct is_specialization<Ref<Args...>, Ref> : std::true_type {};
 
 template <typename T, typename E = ErrorCode> class Result final {
 public:
@@ -94,30 +94,27 @@ public:
   }
   const T &ValueOrThrow() const & noexcept(false) { m_value.value(); }
   T &&ValueOrThrow() && noexcept(false) { std::move(m_value).value(); }
-  template <typename F>
-  T Resolve(F &&f) const {
+  template <typename F> T Resolve(F &&f) const {
     if (HasValue()) {
       return Value();
     }
     return std::invoke(std::forward(f), Error());
   }
 
-
   /*works similar to and_then*/
-  template <class F, class V = const T&, class U = std::remove_cvref_t<std::invoke_result_t<F, V>>>
-  auto Bind(F &&f) const
-  {
+  template <class F, class V = const T &,
+            class U = std::remove_cvref_t<std::invoke_result_t<F, V>>>
+  auto Bind(F &&f) const {
     if (HasValue()) {
-        if constexpr (is_specialization<U,Result>::value) {
-            return std::invoke(std::forward(f),Value());
-        }
-        else {
-            return Result<decltype(f(Value())),E> {std::invoke(std::forward(f),Value())};
-        }
-      //if f returns Result return std::invoke(std::forward(f), Value())
-    }
-    else {
-        return Result<decltype(f(Value())),E> {Error()};
+      if constexpr (is_specialization<U, Result>::value) {
+        return std::invoke(std::forward(f), Value());
+      } else {
+        return Result<decltype(f(Value())), E>{
+            std::invoke(std::forward(f), Value())};
+      }
+      // if f returns Result return std::invoke(std::forward(f), Value())
+    } else {
+      return Result<decltype(f(Value())), E>{Error()};
     }
   }
 
@@ -137,9 +134,42 @@ template <typename E> class Result<void, E> final {
 public:
   using value_type = void;
   using error_type = E;
-  Result() noexcept;
-  explicit Result(const E &e);
-  explicit Result(E &&e);
+  constexpr Result() noexcept;
+  constexpr explicit Result(const E &e);
+  constexpr explicit Result(E &&e);
+  constexpr Result(const Result &other);
+  constexpr Result(Result &&other) noexcept(
+      std::is_nothrow_move_constructible_v<E>);
+  ~Result() noexcept;
+  constexpr static Result<void, E> FromValue() noexcept;
+  constexpr static Result<void, E> FromError(const E &e) noexcept;
+  constexpr static Result<void, E> FromError(E &&e);
+  template <typename... Args> constexpr static Result FromError(Args &&...args);
+  constexpr Result &operator=(const Result &other);
+  constexpr Result &
+  operator=(Result &&other) noexcept(std::is_nothrow_move_constructible_v<E>);
+  template <typename... Args> void EmplaceValue(Args &&...args) noexcept;
+  template <typename... Args>
+  constexpr void EmplaceError(Args &&...args) noexcept;
+  constexpr void
+  Swap(Result &other) noexcept(std::is_nothrow_move_constructible_v<E>
+                                   &&std::is_nothrow_move_assignable_v<E>);
+  constexpr bool HasValue() const noexcept;
+  constexpr explicit operator bool() const noexcept;
+  constexpr void operator*() const noexcept;
+  constexpr void Value() const;
+  constexpr E &Error() const &;
+  constexpr E &&Error() &&;
+  constexpr Optional<E> Err() const &;
+  constexpr Optional<E> Err() &&;
+  template <typename U> constexpr void ValueOr(U &&defaultValue) const;
+  template <typename G> constexpr E ErrorOr(G &&defaultError) const &;
+  template <typename G> constexpr E ErrorOr(G &&defaultError) &&;
+  template <typename G> constexpr bool CheckError(G &&error) const;
+  constexpr void ValueOrThrow() const noexcept(false);
+  template <typename F> void Resolve(F &&f) const;
+  template <typename F> auto Bind(F &&f) const;
+
 };
 
 } // namespace core
