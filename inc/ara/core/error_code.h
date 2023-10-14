@@ -2,6 +2,7 @@
 #include <ara/core/error_domain.h>
 #include <functional>
 #include <type_traits>
+#include <concepts>
 #include <stdexcept>
 #include <ara/core/string_view.h>
 
@@ -11,10 +12,17 @@ class ErrorCode final {
     public:
     /* No idea how to support a constructor w/o specifying ErrorDomain
      * Maybe create a concrete class like NoDomain and make it default to that?
-     * TODO
-     * template<typename EnumT> requires std::is_enum_v<EnumT>
+     * UPDATE
+     * Ok, got it now. Each new domain shall define a MakeErrorCode free function
+     * in it's namespace. The template would be instantiated, and due to not erased
+     * type of EnumT and ADL it would find the MakeErrorCode in a EnumT namespace*/
+    template<typename EnumT>
+        requires std::is_enum_v<EnumT> && 
+        std::copyable<EnumT>
     constexpr ErrorCode (EnumT e, ErrorDomain::SupportDataType data =
-                ErrorDomain::SupportDataType{}) noexcept */
+                ErrorDomain::SupportDataType{}) noexcept {
+        *this = MakeErrorCode(e, data);
+    }
     constexpr ErrorCode(ErrorDomain::CodeType value, const ErrorDomain &domain,
             ErrorDomain::SupportDataType data = ErrorDomain::SupportDataType{})
         noexcept : m_value(value), m_support(data), m_domain(domain){}
