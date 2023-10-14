@@ -10,8 +10,8 @@ namespace core {
  * */
 template<typename Test, template<typename...> class Ref>
 struct is_specialization : std::false_type {};
-struct is_specialization<Ref<Args...>, Ref>: std::true_type {};
 template<template<typename...> class Ref, typename... Args>
+struct is_specialization<Ref<Args...>, Ref>: std::true_type {};
 
 template <typename T, typename E = ErrorCode> class Result final {
 public:
