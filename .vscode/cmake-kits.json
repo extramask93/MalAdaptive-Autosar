@@ -1,9 +1,10 @@
 [
 {
     "name": "Greatest gcc",
+    "generator": "Unix Makefiles",
     "compilers": {
-        "CC": "${userHome}/toolchains/bin/gcc",
-        "CXX": "${userHome}/toolchains/bin/g++"
+        "CC": "/home/damian/toolchains/bin/gcc",
+        "CXX": "/home/damian/toolchains/bin/g++"
     }
 }
 ]

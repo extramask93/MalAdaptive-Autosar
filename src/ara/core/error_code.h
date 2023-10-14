@@ -2,7 +2,6 @@
 #include <ara/core/error_domain.h>
 #include <functional>
 #include <type_traits>
-#include <concepts>
 #include <stdexcept>
 #include <ara/core/string_view.h>
 
@@ -29,14 +28,14 @@ class ErrorCode final {
     constexpr ErrorDomain::CodeType Value() const noexcept {return m_value;}
     constexpr const ErrorDomain& Domain() const noexcept {return m_domain;}
     constexpr ErrorDomain::SupportDataType SupportData() const noexcept  {return m_support;}
-    StringView Message() const noexcept {return m_domain.Message(m_value);}
+    StringView Message() const noexcept {return m_domain.get().Message(m_value);}
     void ThrowAsException() const {
         throw std::runtime_error{std::string(Message())};
     }
 private:
     ErrorDomain::CodeType m_value;
     ErrorDomain::SupportDataType m_support;
-    const ErrorDomain& m_domain;
+    std::reference_wrapper<const ErrorDomain> m_domain;
 
 };
 constexpr bool operator==(const ErrorCode& lhs, const ErrorCode &rhs) noexcept

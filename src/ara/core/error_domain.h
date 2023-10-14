@@ -22,8 +22,8 @@ public:
     return !(*this == other);
   }
   constexpr IdType Id() const noexcept { return m_id; }
-  virtual const char *Name() const noexcept = 0;
-  virtual const char *Message(CodeType errorCode) const noexcept = 0;
+  constexpr virtual const char *Name() const noexcept = 0;
+  constexpr virtual const char *Message(CodeType errorCode) const noexcept = 0;
   virtual void ThrowAsException(const ErrorCode &errorCode) const
       noexcept(false) = 0;
 protected:

@@ -3,5 +3,8 @@
     "cmake.generator": "Unix Makefiles",
     "cmake.configureSettings": {
       "CMAKE_CXX_LINK_FLAGS":["-Wl,-rpath,$HOME/toolchains/lib64","-L$HOME/toolchains/lib64"],
-    }
+    },
+    "clangd.path": "/home/damian/toolchains/bin/clangd",
+    "cmake.configureOnOpen": false,
+    "clangd.onConfigChanged": "restart"
 }
