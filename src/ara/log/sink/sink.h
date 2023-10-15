@@ -5,8 +5,7 @@
 
 namespace ara {
 namespace log {
-namespace sink {
-
+class Message;
 enum class SinkType {
   kConsole,
   kFile,
@@ -14,18 +13,16 @@ enum class SinkType {
 };
 class Sink {
 public:
-  virtual void sink(core::StringView message) = 0;
+  virtual void DoSink(const Message &message) = 0;
+  virtual std::string ToString(const Message &message);
   static std::unique_ptr<Sink> CreateSink(SinkType sink);
 };
-class ConsoleSink: public Sink {
-    public:
-        virtual void sink(core::StringView message) override {
-            std::cout<<message;
-        }
+class ConsoleSink : public Sink {
+public:
+  virtual void DoSink(const Message &message) override;
 };
 class FileSink {};
 class DltSink {};
 
-} // namespace sink
 } // namespace log
 } // namespace ara

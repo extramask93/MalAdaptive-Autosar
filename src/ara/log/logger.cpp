@@ -1,5 +1,4 @@
 #include <ara/log/logger.h>
-#include <ara/log/sink/sink.h>
 #include <ara/log/logging_framework.h>
 #include <ara/log/log_stream.h>
 #include <cassert>
@@ -24,12 +23,41 @@ Logger &CreateLogger(const ara::core::InstanceSpecifier &is) noexcept {
   LogStream Logger::LogFatal() const noexcept {
       return WithLevel(LogLevel::kFatal);
   }
-  LogStream LogError() const noexcept;
-  LogStream LogWarn() const noexcept;
-  LogStream LogInfo() const noexcept;
-  LogStream LogDebug() const noexcept;
-  LogStream LogVerbose() const noexcept;
-  bool IsEnabled(LogLevel logLevel) const noexcept;
-  LogStream WithLevel(LogLevel logLevel) const noexcept;
+  LogStream Logger::LogError() const noexcept{
+      return WithLevel(LogLevel::kError);
+  }
+
+  LogStream Logger::LogWarn() const noexcept{
+      return WithLevel(LogLevel::kWarn);
+  }
+
+  LogStream Logger::LogInfo() const noexcept{
+      return WithLevel(LogLevel::kInfo);
+  }
+
+  LogStream Logger::LogDebug() const noexcept{
+      return WithLevel(LogLevel::kDebug);
+  }
+
+  LogStream Logger::LogVerbose() const noexcept{
+      return WithLevel(LogLevel::kVerbose);
+  }
+
+  bool Logger::IsEnabled(LogLevel logLevel) const noexcept {
+      if(static_cast<uint8_t>(logLevel) <= static_cast<uint8_t>(m_logLevel)) {
+          return true;
+      }
+      return false;
+  }
+  LogStream Logger::WithLevel(LogLevel logLevel) const noexcept {
+      LogStream stream(logLevel, this);
+      return stream;
+  }
+  void Logger::DoSink( Message &message) const noexcept {
+      if(IsEnabled(message.level)) {
+              message.ctxId = m_ctxId;
+              m_framework.DoSink(message);
+      }
+  }
 }
 } // namespace ara

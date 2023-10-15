@@ -2,12 +2,16 @@
 #include <ara/core/intance_specifier.h>
 #include <ara/core/string_view.h>
 #include <ara/log/common.h>
-#include <ara/log/log_stream.h>
 #include <cstdint>
 namespace ara {
 namespace log {
+class Message;   
 class Logger;
 class LogStream;
+class LoggingFramework;
+
+template <typename T>
+class Argument;
 enum class Fmt : std::uint16_t {
   kDefault,
   kDec,
@@ -78,7 +82,6 @@ void RegisterConnectionStateHandler(
 template <typename T>
 Argument<T> Arg(T &&arg, const char *name = nullptr, const char *unit = nullptr,
                 Format fmt = Dflt()) noexcept;
-class LoggingFramework;
 class Logger {
 private:
   std::string m_ctxId;
@@ -86,9 +89,11 @@ private:
   LogLevel m_logLevel;
   LoggingFramework &m_framework;
 public:
+  void DoSink(Message &message) const noexcept;
   Logger(core::StringView ctxId, core::StringView ctxDesc, LogLevel lvl,
-          LoggingFramework &framework): m_ctxId{ctxId},
-      m_ctxDescription{ctxDesc}, m_logLevel{lvl}, m_framework {framework} {}
+         LoggingFramework &framework)
+      : m_ctxId{ctxId}, m_ctxDescription{ctxDesc}, m_logLevel{lvl},
+        m_framework{framework} {}
   LogStream LogFatal() const noexcept;
   LogStream LogError() const noexcept;
   LogStream LogWarn() const noexcept;

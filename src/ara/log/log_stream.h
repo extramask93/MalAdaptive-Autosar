@@ -1,28 +1,48 @@
 #pragma once
 #include <ara/core/string_view.h>
 #include <ara/log/common.h>
-#include <ara/log/logging_framework.h>
 #include <cstdint>
+#include <optional>
+#include <string>
+#include <vector>
 #include <sstream>
 namespace ara {
 namespace log {
+class Logger;
+struct Message {
+    std::uint8_t privacy;
+    LogLevel level;
+    std::optional<size_t> timestamp;
+    std::pair<std::string, int> loc;
+    std::vector<std::string> tags;
+    std::string ctxId;
+    std::string appId;
+    std::string messageArgs;
+};
+
 template <typename T> class Argument final {};
-class Sink;
 class LogStream final {
 private:
-  LogLevel m_level;
-  LoggingFramework *m_framework;
+  const Logger * const m_logger;
   std::stringstream m_ss;
+  Message m_message;
 public:
-  LogStream(LogLevel level, LoggingFramework *framework) : m_level{level}, m_framework{framework} {}
+  LogStream(LogLevel level, const Logger * const logger) : m_logger{logger} {
+      m_message.level = level;
+  }
   LogStream(const LogStream &other) = delete;
   LogStream(LogStream &&other) = default;
   LogStream& operator=(const LogStream &other) = delete;
   LogStream& operator=( LogStream &&other) = delete;
-  ~LogStream() { Flush(); }
-  void Flush() noexcept {
-      m_framework->Sink(m_ss.str());
+  LogStream& WithTag (core::StringView tag) noexcept;
+  LogStream& WithLocation (core::StringView file, int line) noexcept;
+  template <typename T>
+  LogStream& WithPrivacy (T value) noexcept {
+      m_message.privacy = static_cast<uint8_t>(value & 0xFF); 
+      return *this;
   }
+  ~LogStream() { Flush(); }
+  void Flush() noexcept;
   LogStream &operator<<(bool value) noexcept {
     m_ss << value;
     return *this;

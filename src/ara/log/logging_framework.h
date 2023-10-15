@@ -4,6 +4,7 @@
 #include <ara/log/sink/sink.h>
 #include <string>
 #include <unordered_map>
+#include <optional>
 #include <vector>
 namespace ara {
 namespace log {
@@ -18,7 +19,7 @@ class LoggingFramework {
 public:
     using ContextIDType = std::string;
   static LoggingFramework& GetFramework();
-
+  void DoSink( Message &message);
   Logger &Register(ara::core::StringView ctxId, ara::core::StringView ctxDesc) {
       return Register(ctxId, ctxDesc, m_defaultSeverityLevel);
   }
@@ -26,7 +27,7 @@ public:
                    ara::log::LogLevel level) {
     // Create a logger
     auto [it, new_insertion] = m_loggers.emplace(
-        std::make_pair(ctxId, ara::log::Logger{ctxId, ctxDesc, level, *this}));
+        std::make_pair(ctxId, ara::log::Logger(ctxId, ctxDesc, level,*this)));
     if (!new_insertion) {
       // TODO fill description and level
     }
@@ -50,13 +51,13 @@ private:
   std::unordered_map<ContextIDType, ara::log::Logger> m_loggers;
   std::string m_applicationID;
   LogLevel m_defaultSeverityLevel;
-  std::unique_ptr<sink::Sink> m_sink;
+  std::unique_ptr<Sink> m_sink;
   LoggingFramework(core::StringView applicationID = "#DEF",
                    LogLevel defaultLogSeverityLevel = LogLevel::kWarn,
-                   sink::SinkType sink = sink::SinkType::kConsole)
+                   SinkType sink = SinkType::kConsole)
       : m_applicationID(applicationID),
         m_defaultSeverityLevel(defaultLogSeverityLevel),
-        m_sink(sink::Sink::CreateSink(sink)){
+        m_sink(Sink::CreateSink(sink)){
 
         };
 };
