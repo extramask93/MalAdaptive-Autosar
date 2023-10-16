@@ -21,7 +21,7 @@ std::string Sink::ToString(const Message &message) {
   return ss.str();
 }
 void ConsoleSink::DoSink(const Message &message) {
-  std::cout << ToString(message);
+  std::cout << ToString(message) << "\n";
 }
 } // namespace log
 } // namespace ara

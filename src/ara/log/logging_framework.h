@@ -52,7 +52,7 @@ private:
   std::string m_applicationID;
   LogLevel m_defaultSeverityLevel;
   std::unique_ptr<Sink> m_sink;
-  LoggingFramework(core::StringView applicationID = "#DEF",
+  LoggingFramework(core::StringView applicationID = "#APID",
                    LogLevel defaultLogSeverityLevel = LogLevel::kWarn,
                    SinkType sink = SinkType::kConsole)
       : m_applicationID(applicationID),

@@ -13,10 +13,10 @@ struct Message {
     std::uint8_t privacy;
     LogLevel level;
     std::optional<size_t> timestamp;
-    std::pair<std::string, int> loc;
-    std::vector<std::string> tags;
-    std::string ctxId;
-    std::string appId;
+    std::pair<core::StringView, int> loc;
+    std::vector<core::StringView> tags;
+    core::StringView ctxId;
+    core::StringView appId;
     std::string messageArgs;
 };
 
@@ -44,66 +44,75 @@ public:
   ~LogStream() { Flush(); }
   void Flush() noexcept;
   LogStream &operator<<(bool value) noexcept {
-    m_ss << value;
+    m_ss << value<<" ";
     return *this;
   }
   LogStream &operator<<(std::uint8_t value) noexcept {
-    m_ss << value;
+    m_ss << value<<" ";
     return *this;
   }
 
   LogStream &operator<<(std::uint16_t value) noexcept {
-    m_ss << value;
+    m_ss << value << " ";
     return *this;
   }
 
   LogStream &operator<<(std::uint32_t value) noexcept {
-    m_ss << value;
+    m_ss << value<<" ";
     return *this;
   }
 
   LogStream &operator<<(std::uint64_t value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(std::int8_t value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(std::int16_t value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(std::int32_t value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(std::int64_t value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(float value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(double value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(const core::StringView value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 
   LogStream &operator<<(const char *value) noexcept {
     m_ss << value;
+    m_ss << " ";
     return *this;
   }
 };

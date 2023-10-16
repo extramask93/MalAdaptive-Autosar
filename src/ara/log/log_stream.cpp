@@ -14,6 +14,8 @@ namespace log {
   }
   void LogStream::Flush()noexcept{
       m_message.messageArgs = m_ss.str();
+      m_ss.clear();
+      m_ss.str("");
       m_logger->DoSink(m_message);
   }
 
