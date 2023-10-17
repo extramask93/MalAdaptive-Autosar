@@ -22,7 +22,6 @@ public:
   virtual void DoSink(const Message &message) override;
 };
 class FileSink {};
-class DltSink {};
 
 } // namespace log
 } // namespace ara

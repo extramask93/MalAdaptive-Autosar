@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.14...3.22)
 project(MalAdaptive-Autosar
     VERSION 0.0.1 
     LANGUAGES CXX)
+
+find_package(automotive-dlt REQUIRED)
+
 set(CMAKE_CXX_LINK_FLAGS "-Wl,-rpath,/home/damian/toolchains/lib64" "-L/home/damian/toolchains/lib64")
 set(CMAKE_BUILD_RPATH "/home/damian/toolchains/lib64")
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
@@ -26,6 +29,7 @@ target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
                          $<INSTALL_INTERFACE:src/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
+target_link_libraries(${PROJECT_NAME} PRIVATE Genivi::dlt)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") # works
