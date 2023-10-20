@@ -6,8 +6,6 @@ project(MalAdaptive-Autosar
 
 find_package(automotive-dlt REQUIRED)
 
-set(CMAKE_CXX_LINK_FLAGS "-Wl,-rpath,/home/damian/toolchains/lib64" "-L/home/damian/toolchains/lib64")
-set(CMAKE_BUILD_RPATH "/home/damian/toolchains/lib64")
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
   message(
     FATAL_ERROR

@@ -3,6 +3,7 @@
 namespace ara {
 namespace log {
 
+
 std::ostream &operator<<(std::ostream &o, LogLevel lvl) {
   switch (lvl) {
   case LogLevel::kInfo: {

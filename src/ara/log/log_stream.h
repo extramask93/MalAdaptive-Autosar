@@ -1,24 +1,13 @@
 #pragma once
 #include <ara/core/string_view.h>
 #include <ara/log/common.h>
+#include <ara/log/common.h>
 #include <cstdint>
-#include <optional>
 #include <string>
-#include <vector>
 #include <sstream>
 namespace ara {
 namespace log {
 class Logger;
-struct Message {
-    std::uint8_t privacy;
-    LogLevel level;
-    std::optional<size_t> timestamp;
-    std::pair<core::StringView, int> loc;
-    std::vector<core::StringView> tags;
-    core::StringView ctxId;
-    core::StringView appId;
-    std::string messageArgs;
-};
 
 template <typename T> class Argument final {};
 class LogStream final {

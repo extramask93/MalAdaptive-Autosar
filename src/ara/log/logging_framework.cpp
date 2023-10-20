@@ -3,12 +3,8 @@
 namespace ara {
 namespace log {
 
-void LoggingFramework::DoSink(Message &message) {
-  message.appId = m_applicationID;
-  m_sink->DoSink(message);
-}
 LoggingFramework &LoggingFramework::GetFramework() {
-  static LoggingFramework framework;
+  static LoggingFramework framework(std::make_unique<ConsoleSink>());
   return framework;
 }
 } // namespace log

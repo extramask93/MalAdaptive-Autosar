@@ -1,17 +1,17 @@
 #pragma once
 #include <ara/core/intance_specifier.h>
 #include <ara/core/string_view.h>
+#include <ara/log/sink/sink.h>
 #include <ara/log/common.h>
 #include <cstdint>
 namespace ara {
 namespace log {
-class Message;   
+class Message;
 class Logger;
 class LogStream;
 class LoggingFramework;
 
-template <typename T>
-class Argument;
+template <typename T> class Argument;
 enum class Fmt : std::uint16_t {
   kDefault,
   kDec,
@@ -79,21 +79,23 @@ Logger &CreateLogger(const ara::core::InstanceSpecifier &is) noexcept;
 void RegisterConnectionStateHandler(
     std::function<void(ClientState)> callback) noexcept;
 
+  template <typename T> struct asserter : std::false_type {};
 template <typename T>
 Argument<T> Arg(T &&arg, const char *name = nullptr, const char *unit = nullptr,
-                Format fmt = Dflt()) noexcept;
+                Format fmt = Dflt()) noexcept {}
 class Logger {
 private:
   std::string m_ctxId;
   std::string m_ctxDescription;
   LogLevel m_logLevel;
-  LoggingFramework &m_framework;
+  Sink &m_sink;
+
 public:
   void DoSink(Message &message) const noexcept;
   Logger(core::StringView ctxId, core::StringView ctxDesc, LogLevel lvl,
-         LoggingFramework &framework)
+         Sink &sink)
       : m_ctxId{ctxId}, m_ctxDescription{ctxDesc}, m_logLevel{lvl},
-        m_framework{framework} {}
+        m_sink{sink} {}
   LogStream LogFatal() const noexcept;
   LogStream LogError() const noexcept;
   LogStream LogWarn() const noexcept;
@@ -103,10 +105,14 @@ public:
   bool IsEnabled(LogLevel logLevel) const noexcept;
   LogStream WithLevel(LogLevel logLevel) const noexcept;
   template <typename MsgId, typename... Params>
-  void Log(const MsgId &id, const Params &...args) noexcept;
+  void Log(const MsgId &id, const Params &...args) noexcept {
+    static_assert(asserter<MsgId>::value, "Non verbose messages not supported");
+  }
   template <typename... Attrs, typename MsgId, typename... Params>
   void LogWith(const std::tuple<Attrs...> &attrs, const MsgId &id,
-               const Params &...params) noexcept;
+               const Params &...params) noexcept {
+    static_assert(asserter<MsgId>::value, "Non verbose messages not supported");
+  }
   void SetThreshold(LogLevel threshold) noexcept;
 };
 } // namespace log

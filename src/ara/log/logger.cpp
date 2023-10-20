@@ -53,10 +53,13 @@ Logger &CreateLogger(const ara::core::InstanceSpecifier &is) noexcept {
       LogStream stream(logLevel, this);
       return stream;
   }
+  void Logger::SetThreshold(LogLevel threshold) noexcept {
+      m_logLevel = threshold;
+  }
   void Logger::DoSink( Message &message) const noexcept {
       if(IsEnabled(message.level)) {
               message.ctxId = m_ctxId;
-              m_framework.DoSink(message);
+              m_sink.DoSink(message);
       }
   }
 }
